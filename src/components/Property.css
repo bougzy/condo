@@ -1,0 +1,17 @@
+.card-media {
+    position: relative;
+    width: 100%;
+    height: 250px; /* Set the desired height */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card-media-item {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the media covers the area without distortion */
+    display: block;
+  }
+  
