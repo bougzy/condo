@@ -1,8 +1,12 @@
 
 
-import React, { useState } from "react";
+
+
+import React, { useState, useMemo } from "react";
 import { Modal, Button, Carousel } from "react-bootstrap";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import { Buffer } from "buffer";
 
 function PropertyCard({ property, onDelete }) {
@@ -20,22 +24,23 @@ function PropertyCard({ property, onDelete }) {
 
   const [showModal, setShowModal] = useState(false);
 
-  // Function to create media source URLs from base64 data
-  const createMediaSrc = (file) => {
+  // Memoize the creation of media source URLs to avoid re-computation
+  const createMediaSrc = useMemo(() => (file) => {
     if (!file || !file.data || !file.data.data) return "";
 
     return `data:${file.contentType};base64,${Buffer.from(
       file.data.data
     ).toString("base64")}`;
-  };
+  }, []);
 
   return (
     <div className="card mb-4">
       {images.length > 0 && (
-        <img
+        <LazyLoadImage
           src={createMediaSrc(images[0])}
           className="card-img-top"
           alt={name}
+          effect="blur" // Adds a blur effect while loading
         />
       )}
 
@@ -78,10 +83,11 @@ function PropertyCard({ property, onDelete }) {
               <Carousel>
                 {images.map((image, index) => (
                   <Carousel.Item key={index}>
-                    <img
+                    <LazyLoadImage
                       className="d-block w-100"
                       src={createMediaSrc(image)}
                       alt={`Slide ${index + 1}`}
+                      effect="blur"
                     />
                   </Carousel.Item>
                 ))}
@@ -119,5 +125,5 @@ function PropertyCard({ property, onDelete }) {
   );
 }
 
-export default PropertyCard;
+export default React.memo(PropertyCard); // Memoize PropertyCard to prevent unnecessary re-renders
 
